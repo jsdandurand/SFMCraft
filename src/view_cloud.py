@@ -1,6 +1,11 @@
 import open3d as o3d
 import numpy as np
 import argparse
+import os
+
+# Try to force EGL backend
+os.environ["OPEN3D_CPU_RENDERING"] = "true"
+os.environ["PYOPENGL_PLATFORM"] = "egl"
 
 def normalize_points(points):
     """Center and normalize points to unit cube"""
@@ -28,12 +33,27 @@ def view_point_cloud(ply_path):
     # Create coordinate frame
     coord_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.3)
     
-    # Visualize
-    o3d.visualization.draw_geometries([pcd, coord_frame],
-                                    window_name="Point Cloud Viewer",
-                                    width=1024,
-                                    height=768,
-                                    point_show_normal=False)
+    # Create visualizer
+    vis = o3d.visualization.Visualizer()
+    vis.create_window(width=1024, height=768, visible=True)
+    
+    # Add geometries
+    vis.add_geometry(pcd)
+    vis.add_geometry(coord_frame)
+    
+    # Set render options
+    opt = vis.get_render_option()
+    opt.point_size = 2.0
+    opt.background_color = np.array([0.1, 0.1, 0.1])  # Dark background
+    
+    # Update view
+    vis.update_geometry(pcd)
+    vis.poll_events()
+    vis.update_renderer()
+    
+    # Run visualizer
+    vis.run()
+    vis.destroy_window()
 
 def main():
     parser = argparse.ArgumentParser(description="Interactive point cloud viewer")
