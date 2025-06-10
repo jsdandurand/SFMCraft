@@ -1,0 +1,6 @@
+name: Image2MC
+version: '1.0-SNAPSHOT'
+main: me.image2mc.image2MC.Image2MC
+api-version: '1.21'
+authors: [ JS Dandurand, Porom Kamal ]
+description: Convert images into minecraft builds
