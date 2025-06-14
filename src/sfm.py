@@ -227,7 +227,7 @@ def run_sfm_pipeline(input_dir, output_dir, orient_cloud=False, crop_factor=0.8)
         --output_path {sparse_dir} \
         --Mapper.ba_refine_focal_length 1 \
         --Mapper.ba_refine_extra_params 1 \
-        --Mapper.min_num_matches 15 \
+        --Mapper.min_num_matches 15\
         --Mapper.init_min_num_inliers 100 \
         --Mapper.abs_pose_min_num_inliers 30 \
         --Mapper.abs_pose_min_inlier_ratio 0.25 \

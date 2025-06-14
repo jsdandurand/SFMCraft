@@ -226,7 +226,7 @@ def orient_by_floor(pcd, plane_model):
     
     return aligned + centroid, R
 
-def remove_outliers(pcd, nb_neighbors=20, std_ratio=2.0):
+def remove_outliers(pcd, nb_neighbors=10, std_ratio=1.0):
     """Remove outliers using statistical analysis with KNN.
     A point is considered an outlier if its average distance to its k nearest neighbors
     is above std_ratio times the standard deviation of the average distances."""
@@ -236,7 +236,7 @@ def remove_outliers(pcd, nb_neighbors=20, std_ratio=2.0):
     print(f"Removed {len(pcd.points) - len(cleaned_pcd.points)} outlier points")
     return cleaned_pcd
 
-def isolate_main_object(pcd, eps=0.05, min_points=100):
+def isolate_main_object(pcd, eps=0.01, min_points=100):
     """Isolate the main object (largest cluster) using DBSCAN clustering.
     eps: maximum distance between points in the same cluster
     min_points: minimum number of points to form a cluster"""
@@ -322,17 +322,17 @@ def main():
     parser.add_argument('--input', type=str, required=True, help='Input PLY point cloud file')
     parser.add_argument('--output', type=str, help='Output path for voxel grid data (.npy)')
     parser.add_argument('--vis-output', type=str, help='Output directory for visualization files')
-    parser.add_argument('--voxel-size', type=float, default=0.05, 
+    parser.add_argument('--voxel-size', type=float, default=0.02, 
                        help='Size of voxels (default: 0.05)')
     parser.add_argument('--normalize', action='store_true',
                        help='Normalize point cloud to unit cube')
-    parser.add_argument('--crop-factor', type=float, default=0.8,
+    parser.add_argument('--crop-factor', type=float, default=1,
                        help='Factor to crop central region (0-1, default: 0.8 = central 80%%)')
     parser.add_argument('--clean', action='store_true',
                        help='Remove outlier points using statistical analysis')
-    parser.add_argument('--nb-neighbors', type=int, default=20,
+    parser.add_argument('--nb-neighbors', type=int, default=10,
                        help='Number of neighbors to consider for outlier removal')
-    parser.add_argument('--std-ratio', type=float, default=2.0,
+    parser.add_argument('--std-ratio', type=float, default=1e-4,
                        help='Standard deviation ratio for outlier removal')
     parser.add_argument('--isolate', action='store_true',
                        help='Isolate the main object using clustering')
