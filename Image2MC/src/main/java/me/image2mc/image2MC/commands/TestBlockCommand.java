@@ -4,6 +4,7 @@ import me.image2mc.image2MC.loaders.VoxelLoader;
 import me.image2mc.image2MC.models.Pallette;
 import me.image2mc.image2MC.models.Voxel;
 import me.image2mc.image2MC.models.VoxelModel;
+import me.image2mc.image2MC.parsers.NPyVoxelParser;
 import me.image2mc.image2MC.parsers.PyVoxelParser;
 import me.image2mc.image2MC.texture.TextureColors;
 import org.bukkit.DyeColor;
@@ -81,7 +82,7 @@ public class TestBlockCommand implements CommandExecutor {
         return true;
       }
 
-      VoxelLoader loader = new VoxelLoader(List.of(new PyVoxelParser()));
+      VoxelLoader loader = new VoxelLoader(List.of(new PyVoxelParser(), new NPyVoxelParser()));
       VoxelModel model = loader.load(voxelFile);
 
       World world = player.getWorld();
