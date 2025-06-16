@@ -90,8 +90,8 @@ public class NPyVoxelParser implements VoxelParser {
                             paletteList.add(new Pallette(red, green, blue));
                             return paletteList.size() - 1;
                         });
-                        // y axis needs to be inverted cause it's flipped in MC
-                        voxelList.add(new Voxel(i,h - 1 - j, k, paletteIndex));
+                        // y, and z axis needs to be inverted cause it's flipped in MC
+                        voxelList.add(new Voxel(i, h - 1 - j, l - 1 - k, paletteIndex));
                     }
                 }
             }
