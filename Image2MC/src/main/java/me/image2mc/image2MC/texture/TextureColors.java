@@ -12,6 +12,8 @@ import java.util.Map;
 public class TextureColors {
   public static final Map<Material, Pallette> colorMap = new HashMap<>(); // Stores block_name --> Pallette
 
+  private static final double MAX_STDDEV_THRESHOLD = 40;
+
   static {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(
         TextureColors.class.getResourceAsStream("/average.txt")))) {
@@ -36,6 +38,17 @@ public class TextureColors {
         int r = Integer.parseInt(rgb[0].trim());
         int g = Integer.parseInt(rgb[1].trim());
         int b = Integer.parseInt(rgb[2].trim());
+
+        // Parse RGB stddev and compute max
+        String[] stddevRGB = parts[4].split(",");
+        if (stddevRGB.length < 3) continue;
+        double stdR = Double.parseDouble(stddevRGB[0].trim());
+        double stdG = Double.parseDouble(stddevRGB[1].trim());
+        double stdB = Double.parseDouble(stddevRGB[2].trim());
+
+        double maxStd = Math.max(stdR, Math.max(stdG, stdB));
+        if (maxStd > MAX_STDDEV_THRESHOLD) continue;
+
         colorMap.put(material, new Pallette(r, g, b));
       }
     } catch (IOException e) {
