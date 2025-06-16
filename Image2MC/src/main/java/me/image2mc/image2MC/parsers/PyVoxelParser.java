@@ -14,6 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+@Deprecated /*
+ * This parser is deprecated and will be removed in a future version.
+ * This was based on a .py file format which was outputted by https://drububu.com/miscellaneous/voxelizer/?out=pyt.
+ * Was mainly used for testing purposes.
+ */
 public class PyVoxelParser implements VoxelParser {
 
   @Override
