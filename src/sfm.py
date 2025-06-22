@@ -182,7 +182,7 @@ def crop_to_center(points, colors, crop_factor=0.8):
     
     return cropped_points, cropped_colors
 
-def run_sfm_pipeline(input_dir, output_dir, orient_cloud=False, crop_factor=0.8):
+def run_sfm_pipeline(input_dir, output_dir):
     """
     Run the complete COLMAP SfM pipeline:
     1. Feature extraction
@@ -260,8 +260,8 @@ def run_sfm_pipeline(input_dir, output_dir, orient_cloud=False, crop_factor=0.8)
         --PatchMatchStereo.depth_max 100 \
         --PatchMatchStereo.window_radius 5 \
         --PatchMatchStereo.window_step 2 \
-        --PatchMatchStereo.num_samples 15 \
-        --PatchMatchStereo.num_iterations 10 \
+        --PatchMatchStereo.num_samples 10 \
+        --PatchMatchStereo.num_iterations 5 \
         --PatchMatchStereo.geom_consistency true \
         --PatchMatchStereo.filter true \
         --PatchMatchStereo.filter_min_ncc 0.1 \
@@ -287,50 +287,16 @@ def run_sfm_pipeline(input_dir, output_dir, orient_cloud=False, crop_factor=0.8)
         "Fusing depth maps into point cloud"
     )
 
-    # Orient point cloud if requested
-    if orient_cloud:
-        print("Processing point cloud...")
-        oriented_path = os.path.join(dense_dir, 'fused_oriented.ply')
-        # Load the point cloud
-        pcd = o3d.io.read_point_cloud(point_cloud_path)
-        points = np.asarray(pcd.points)
-        colors = np.asarray(pcd.colors)
-        
-        # First crop to center
-        print("\nCropping to central region...")
-        points, colors = crop_to_center(points, colors, crop_factor)
-        
-        # Then orient using PCA
-        print("\nOrienting using PCA...")
-        oriented_points, rotation = orient_point_cloud(points)
-        
-        # Finally normalize
-        print("\nNormalizing to unit cube...")
-        normalized_points = normalize_points(oriented_points)
-        
-        # Save oriented point cloud
-        oriented_pcd = o3d.geometry.PointCloud()
-        oriented_pcd.points = o3d.utility.Vector3dVector(normalized_points)
-        oriented_pcd.colors = o3d.utility.Vector3dVector(colors)
-        o3d.io.write_point_cloud(oriented_path, oriented_pcd)
-        print(f"Saved oriented point cloud to {oriented_path}")
-        return oriented_path
-
     return point_cloud_path
 
 def main():
     parser = argparse.ArgumentParser(description="Run COLMAP SfM pipeline on input images")
     parser.add_argument('--input', type=str, required=True, help='Input directory containing images')
     parser.add_argument('--output', type=str, required=True, help='Output directory for reconstruction')
-    parser.add_argument('--orient', action='store_true', help='Orient the point cloud after reconstruction')
-    parser.add_argument('--crop-factor', type=float, default=0.8,
-                       help='Factor to crop central region (0-1, default: 0.8 = central 80%%)')
     args = parser.parse_args()
 
     try:
-        point_cloud_path = run_sfm_pipeline(args.input, args.output, 
-                                          orient_cloud=args.orient,
-                                          crop_factor=args.crop_factor)
+        point_cloud_path = run_sfm_pipeline(args.input, args.output)
         print(f"\nSuccess! You can now use the point cloud at {point_cloud_path} for voxelization.")
     except Exception as e:
         print(f"Error during reconstruction: {str(e)}", file=sys.stderr)
