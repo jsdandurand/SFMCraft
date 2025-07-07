@@ -434,6 +434,24 @@ def remove_floor(pcd, distance_threshold=0.02, ransac_n=3, num_iterations=100):
     
     return no_floor_pcd
 
+def remove_white_points(pcd, threshold=240):
+    """
+    Remove points that are white or near-white based on color intensity.
+    Args:
+        pcd: Open3D point cloud
+        threshold: RGB threshold above which points are considered white (default: 240)
+    Returns:
+        Point cloud with white points removed
+    """
+    print(f"\nRemoving white points (intensity threshold: {threshold})...")
+    colors = np.asarray(pcd.colors) * 255  # Convert to 0-255 range
+    intensities = np.mean(colors, axis=1)
+    non_white_indices = np.where(intensities < threshold)[0]
+    filtered_pcd = pcd.select_by_index(non_white_indices)
+    removed_count = len(pcd.points) - len(filtered_pcd.points)
+    print(f"Removed {removed_count} white points ({removed_count/len(pcd.points)*100:.1f}%)")
+    return filtered_pcd
+
 def postprocess_point_cloud(input_path, output_path, 
                            smart_downsample=False, downsample_factor=0.5, voxel_size=0.05,
                            crop_factor=1.0, clean=False, nb_neighbors=10, std_ratio=1e-4,
@@ -442,7 +460,8 @@ def postprocess_point_cloud(input_path, output_path,
                            remove_floor_flag=False, plane_threshold=0.1,
                            orient_by_floor_flag=False, normalize=False,
                            crop_to_center_flag=False, center_crop_factor=0.8,
-                           colmap_sparse_dir=None, cluster_size_threshold=0.05, top_k_clusters=1):
+                           colmap_sparse_dir=None, cluster_size_threshold=0.05, top_k_clusters=1,
+                           remove_white_flag=False, white_threshold=240):
     """
     Complete point cloud post-processing pipeline.
     """
@@ -547,7 +566,9 @@ def postprocess_point_cloud(input_path, output_path,
             pcd = isolate_main_object(pcd, eps=cluster_eps, min_points=min_cluster_points, 
                                     method=isolation_method, camera_centers=camera_centers,
                                     cluster_size_threshold=cluster_size_threshold, top_k_clusters=top_k_clusters)
-
+    # Remove white points if requested
+    if remove_white_flag:
+        pcd = remove_white_points(pcd, threshold=white_threshold)
     # Bilateral smoothing if requested
     if smooth:
         pcd = bilateral_smooth(pcd, radius=smooth_radius, sigma_spatial=sigma_spatial, 
@@ -560,22 +581,17 @@ def postprocess_point_cloud(input_path, output_path,
             bbox = pcd.get_axis_aligned_bounding_box()
             center = bbox.get_center()
             scale = np.max(bbox.get_extent())
-        
         pcd = normalize_point_cloud(pcd)
-        
         # Apply same normalization to camera poses
         if camera_centers is not None:
             camera_centers = (camera_centers - center) * (1.0 / scale)
             print("Applied normalization to camera poses")
-    
     # Save processed point cloud
     print(f"\nSaving processed point cloud to {output_path}")
     o3d.io.write_point_cloud(output_path, pcd)
-    
     print(f"\n✓ Post-processing complete!")
     print(f"Final point cloud: {len(pcd.points)} points")
     print(f"Saved to: {output_path}")
-    
     return output_path
 
 def main():
@@ -622,7 +638,7 @@ def main():
     # Isolation parameters
     parser.add_argument('--isolate', action='store_true',
                        help='Isolate the main object using clustering')
-    parser.add_argument('--cluster-eps', type=float, default=0.1,
+    parser.add_argument('--cluster-eps', type=float, default=0.5,
                        help='Maximum distance between points in the same cluster (default: 0.1)')
     parser.add_argument('--min-cluster-points', type=int, default=100,
                        help='Absolute minimum number of points to form a cluster (default: 100)')
@@ -648,7 +664,14 @@ def main():
     parser.add_argument('--normalize', action='store_true',
                        help='Normalize point cloud to unit cube')
     
+    # White point removal parameters
+    parser.add_argument('--remove-white', action='store_true',
+                       help='Remove white or near-white points based on color intensity')
+    parser.add_argument('--white-threshold', type=int, default=240,
+                       help='RGB threshold above which points are considered white (default: 240)')
+    
     args = parser.parse_args()
+    print('test')
     
     try:
         postprocess_point_cloud(
@@ -677,9 +700,10 @@ def main():
             center_crop_factor=args.center_crop_factor,
             colmap_sparse_dir=args.colmap_sparse_dir,
             cluster_size_threshold=args.cluster_size_threshold,
-            top_k_clusters=args.top_k_clusters
+            top_k_clusters=args.top_k_clusters,
+            remove_white_flag=args.remove_white,
+            white_threshold=args.white_threshold
         )
-        
     except Exception as e:
         print(f"Error during post-processing: {str(e)}", file=sys.stderr)
         sys.exit(1)
@@ -791,5 +815,5 @@ def quaternion_to_rotation_matrix(q):
     
     return R
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

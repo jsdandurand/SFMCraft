@@ -134,6 +134,10 @@ def run_postprocessing(input_path, output_path, **kwargs):
         cmd.append("--crop-to-center")
     if "center_crop_factor" in kwargs:
         cmd.extend(["--center-crop-factor", str(kwargs["center_crop_factor"])])
+    if kwargs.get("remove_white_flag", False):
+        cmd.append("--remove-white")
+    if "white_threshold" in kwargs:
+        cmd.extend(["--white-threshold", str(kwargs["white_threshold"])])
     
     run_command(cmd, "Point cloud postprocessing")
 
@@ -244,7 +248,7 @@ def main():
                        help='Minimum cluster size as fraction of largest cluster (default: 0.01 = 1%)')
     parser.add_argument('--top-k-clusters', type=int, default=1,
                        help='Number of top-scoring clusters to keep (default: 1)')
-    parser.add_argument('--isolation-method', type=str, default='largest',
+    parser.add_argument('--isolation-method', type=str, default='camera_centered',
                        choices=['largest', 'density', 'center_priority', 'camera_centered'],
                        help='Method for selecting object cluster (default: largest)')
 
@@ -277,6 +281,12 @@ def main():
     parser.add_argument('--center-crop-factor', type=float, default=0.8,
                        help='Factor for center crop (0-1, default: 0.8 = central 80%%)')
     
+    # New options for removing white points
+    parser.add_argument('--remove-white', action='store_true',
+                       help='Remove white or near-white points based on color intensity during postprocessing')
+    parser.add_argument('--white-threshold', type=int, default=240,
+                       help='RGB threshold above which points are considered white (default: 240)')
+    
     args = parser.parse_args()
     
     # Setup output directory
@@ -298,7 +308,7 @@ def main():
     # Determine if we need to run SfM
     need_sfm = args.force_sfm or (not expected_point_cloud.exists() and not saved_original_cloud.exists())
     
-    # Determine input directory (only extract video frames if we need SfM)
+    # Determine input directory (only extract video frames if we need to run SfM)
     if args.video:
         print(f"Input: Video file {args.video}")
         
@@ -424,6 +434,8 @@ def main():
             "crop_to_center": args.crop_to_center,
             "center_crop_factor": args.center_crop_factor,
             "colmap_sparse_dir": colmap_sparse_dir,
+            "remove_white_flag": args.remove_white,
+            "white_threshold": args.white_threshold,
         }
         
         run_postprocessing(point_cloud_path, processed_cloud_path, **postprocess_kwargs)
