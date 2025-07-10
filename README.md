@@ -8,90 +8,32 @@ Transform real-world photos and videos into stunning Minecraft builds using adva
 
 <table>
 <tr>
-<td align="center"><strong>Original Photos</strong></td>
-<td align="center"><strong>Voxel representation</strong></td>
+<td align="center"><strong>Input</strong></td>
+<td align="center"><strong>Voxel Representation</strong></td>
 <td align="center"><strong>Minecraft Result</strong></td>
 </tr>
 <tr>
 <td><img src="examples/fairlife/original.jpg" width="250" alt="Original photo"></td>
 <td><img src="examples/fairlife/voxel.png" width="250" alt="Voxel representation"></td>
-<td><img src="examples/minecraft_build.png" width="250" alt="Final Minecraft build"></td>
-</tr>
-</table>
-
-*Example: Converting real-world architecture into a detailed Minecraft build*
-
-### Step-by-Step Pipeline Visualization
-
-<table>
-<tr>
-<td align="center"><strong>1. Video Input</strong></td>
-<td align="center"><strong>2. Frame Sampling</strong></td>
-<td align="center"><strong>3. Structure from Motion</strong></td>
+<td><img src="examples/fairlife/minecraft_build.png" width="250" alt="Final Minecraft build"></td>
 </tr>
 <tr>
-<td><img src="examples/input_video.gif" width="200" alt="Input video walkthrough"></td>
-<td><img src="examples/sampled_frames.jpg" width="200" alt="Extracted key frames"></td>
-<td><img src="examples/sfm_reconstruction.png" width="200" alt="SfM camera poses and sparse points"></td>
-</tr>
-</table>
-
-<table>
-<tr>
-<td align="center"><strong>4. Dense Point Cloud</strong></td>
-<td align="center"><strong>5. Voxel Grid</strong></td>
-<td align="center"><strong>6. Minecraft Build</strong></td>
-</tr>
-<tr>
-<td><img src="examples/dense_pointcloud.png" width="200" alt="Dense 3D point cloud"></td>
-<td><img src="examples/voxel_grid.png" width="200" alt="Voxelized representation"></td>
-<td><img src="examples/final_build.png" width="200" alt="Complete Minecraft structure"></td>
+<td><img src="examples/js/JS.gif" width="200" alt="Input video walkthrough"></td>
+<td><img src="examples/js/voxel.png" width="200" alt="Voxel representation"></td>
+<td><img src="examples/js/minecraft_build.png" width="200" alt="Final Minecraft build"></td>
 </tr>
 </table>
 
 ## How It Works
 
-SFMCraft uses a sophisticated computer vision and 3D reconstruction pipeline to convert real-world scenes into Minecraft builds. The process involves several key stages:
+SFMCraft converts real-world photos or video into Minecraft builds using a multi-stage 3D vision pipeline:
 
-### 1. Input Processing
-The pipeline accepts either:
-- **Multiple photographs** of a scene taken from different angles
-- **Video footage** of a walkthrough or flythrough of the target area
-
-For video input, the system intelligently samples key frames to ensure good coverage while avoiding redundant images.
-
-### 2. Structure from Motion (SfM)
-Using advanced photogrammetry techniques, the system:
-- Detects and matches features across all input images
-- Estimates camera positions and orientations for each photo
-- Triangulates 3D points to create a sparse point cloud
-- Reconstructs the 3D geometry of the photographed scene
-
-This process essentially reverse-engineers the 3D structure that created the 2D photographs.
-
-### 3. Dense Point Cloud Generation
-The sparse SfM reconstruction is enhanced to create a dense, detailed point cloud:
-- Multi-view stereo algorithms fill in gaps between sparse points
-- Surface normals and colors are computed for each 3D point
-- Noise filtering and outlier removal improve data quality
-
-### 4. Voxelization
-The continuous point cloud is converted into a discrete voxel grid:
-- 3D space is divided into uniform cubic cells (voxels)
-- Each voxel is classified as occupied or empty based on nearby points
-- Voxel colors are determined by averaging nearby point cloud colors
-
-### 5. Block Mapping and Optimization
-The voxel grid is translated into Minecraft blocks:
-- Each voxel's color is matched to the closest available Minecraft block
-- A sophisticated color palette system ensures realistic material representation
-- Block placement is optimized for structural integrity and visual appeal
-
-### 6. Minecraft Integration
-The final build is generated as:
-- **Schematic files** for import into creative mode
-- **Direct world generation** via the included Minecraft plugin
-- **Command sequences** for automated building
+1. **Input Processing:** Accepts multiple photos or a video walkthrough; samples key frames for coverage.
+2. **Structure from Motion:** Detects features, estimates camera poses, and reconstructs a sparse 3D point cloud.
+3. **Dense Point Cloud:** Fills in geometry with multi-view stereo, computes colors, and filters noise.
+4. **Voxelization:** Converts the point cloud into a colored voxel grid for Minecraft compatibility.
+5. **Block Mapping:** Matches voxel colors to Minecraft blocks and optimizes placement.
+6. **Minecraft Integration:** Outputs schematic files or direct world builds for easy import.
 
 ## Technical Architecture
 
@@ -117,13 +59,6 @@ The final build is generated as:
 - **Scalable Processing**: Handles everything from small objects to large architectural scenes
 - **Multiple Input Formats**: Works with photos, videos, and existing point clouds
 - **Minecraft Integration**: Seamless import into Minecraft worlds via plugin or schematics
-
-## Applications
-
-- **Architecture Visualization**: Convert real buildings into explorable Minecraft environments
-- **Educational Projects**: Bring historical sites and landmarks into Minecraft classrooms
-- **Creative Building**: Transform artistic inspiration from the real world into block form
-- **Documentation**: Preserve important structures and spaces in an interactive digital format
 
 ---
 
