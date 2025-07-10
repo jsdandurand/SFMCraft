@@ -1,4 +1,4 @@
-# MotionCraft: Real World to Minecraft Pipeline
+# SFMCraft: Real World to Minecraft Pipeline
 
 Transform real-world photos and videos into stunning Minecraft builds using advanced 3D reconstruction techniques.
 
@@ -51,7 +51,7 @@ Transform real-world photos and videos into stunning Minecraft builds using adva
 
 ## How It Works
 
-MotionCraft uses a sophisticated computer vision and 3D reconstruction pipeline to convert real-world scenes into Minecraft builds. The process involves several key stages:
+SFMCraft uses a sophisticated computer vision and 3D reconstruction pipeline to convert real-world scenes into Minecraft builds. The process involves several key stages:
 
 ### 1. Input Processing
 The pipeline accepts either:
