@@ -13,8 +13,8 @@ Transform real-world photos and videos into stunning Minecraft builds using adva
 <td align="center"><strong>Minecraft Result</strong></td>
 </tr>
 <tr>
-<td><img src="examples/input_photos.jpg" width="250" alt="Input photos of building"></td>
-<td><img src="examples/pointcloud_view.png" width="250" alt="Generated 3D point cloud"></td>
+<td><img src="examples/fairlife/original.jpg" width="250" alt="Original photo"></td>
+<td><img src="examples/fairlife/voxel.png" width="250" alt="Voxel representation"></td>
 <td><img src="examples/minecraft_build.png" width="250" alt="Final Minecraft build"></td>
 </tr>
 </table>
