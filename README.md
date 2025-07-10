@@ -4,12 +4,12 @@ Transform real-world photos and videos into stunning Minecraft builds using adva
 
 ## Pipeline Demonstration
 
-### Input → Structure from Motion → Point Cloud → Minecraft Build
+### Input → Structure from Motion → Voxel Grid → Minecraft Build
 
 <table>
 <tr>
 <td align="center"><strong>Original Photos</strong></td>
-<td align="center"><strong>3D Point Cloud</strong></td>
+<td align="center"><strong>Voxel representation</strong></td>
 <td align="center"><strong>Minecraft Result</strong></td>
 </tr>
 <tr>
