@@ -15,12 +15,13 @@ Transform real-world photos and videos into stunning Minecraft builds using adva
 <tr>
 <td><img src="examples/fairlife/original.jpg" width="250" alt="Original photo"></td>
 <td><img src="examples/fairlife/voxel.png" width="250" alt="Voxel representation"></td>
-<td><img src="examples/fairlife/minecraft_build.png" width="250" alt="Final Minecraft build"></td>
+<td><img width="250" alt="image" src="https://github.com/user-attachments/assets/cc6e3617-25d3-404f-ba6a-d2bb717cdda7" />
+</td>
 </tr>
 <tr>
 <td><img src="examples/js/JS.gif" width="200" alt="Input video walkthrough"></td>
 <td><img src="examples/js/voxel.png" width="200" alt="Voxel representation"></td>
-<td><img src="examples/js/minecraft_build.png" width="200" alt="Final Minecraft build"></td>
+<td><img width="200" alt="image" src="https://github.com/user-attachments/assets/15f0e4b8-9cbe-48cb-b289-9585cc3f0574" /></td>
 </tr>
 </table>
 
